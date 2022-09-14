@@ -15,3 +15,5 @@
 ```
 
 # Up & Running
+
+* [Install Apache Kafka](https://tecadmin.net/how-to-install-apache-kafka-on-ubuntu-22-04/)
