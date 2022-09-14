@@ -1,3 +1,5 @@
+github.com/brianvoe/gofakeit/v6 v6.18.0 h1:tDQ4zJVFQHaJKvY9xYSqGN4S7noZU/doFn15/aNbhCU=
+github.com/brianvoe/gofakeit/v6 v6.18.0/go.mod h1:Ow6qC71xtwm79anlwKRlWZW6zVq9D2XHE4QSSMP/rU8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/klauspost/compress v1.15.7 h1:7cgTQxJCU/vy+oP/E3B9RGbQTgbiVzIJWIKOLoAsPok=

@@ -2,94 +2,81 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
 	"math/rand"
-	"strconv"
-	"strings"
 	"time"
-	"unicode"
 
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/segmentio/kafka-go"
 )
 
-type Customer struct {
-	name string
-	age  int
+type CustomerInfo struct {
+	Name  string `json:"name"`
+	Age   int    `json:"age"`
+	City  string `json:"city"`
+	State string `json:"state"`
 }
 
-type Order struct {
-	time     string
-	customer Customer
-	order    Item
-	quantity int
-}
-
-func (o Order) String() string {
-	age := strconv.Itoa(o.customer.age)
-	price := fmt.Sprintf("%.2f", o.order.price)
-	quantity := strconv.Itoa(o.quantity)
-
-	return o.time + "," + o.customer.name + "," + age + "," + o.order.name + "," + price + "," + quantity
-}
-
-func createName() string {
-	var n strings.Builder
-
-	for i := 1; i < 6; i++ {
-		r := rune(rand.Intn(122-97) + 97)
-		if i == 1 {
-			r = unicode.ToUpper(r)
-		}
-		n.WriteRune(r)
-	}
-
-	return n.String()
+type ChipotleOrder struct {
+	Time       string       `json:"time"`
+	Customer   CustomerInfo `json:"customer"`
+	Order      []Item       `json:"order"`
+	CreditCard string       `json:"creditCard"`
 }
 
 func createAge() int {
 	return rand.Intn(76-14) + 14
 }
 
-func createCustomer() Customer {
-	return Customer{createName(), createAge()}
+func createCustomer() CustomerInfo {
+	return CustomerInfo{gofakeit.Name(), createAge(), gofakeit.City(), gofakeit.State()}
 }
 
-func getQuantity() int {
-	return rand.Intn(4-1) + 1
+func createOrder() []Item {
+	itemCount := rand.Intn(3) + 1
+	items := make([]Item, itemCount)
+	for i := 0; i < itemCount; i++ {
+		items = append(items, chipotleMenu[rand.Intn(len(chipotleMenu))])
+	}
+	return items
 }
 
-func getOrder() Order {
-	return Order{
+func getOrder() ChipotleOrder {
+	return ChipotleOrder{
 		time.Now().UTC().Format("2006-01-02 15:04:05"),
 		createCustomer(),
-		chipotleMenu[rand.Intn(len(chipotleMenu))],
-		getQuantity(),
+		createOrder(),
+		gofakeit.CreditCardType(),
 	}
 }
 
+func push(writer *kafka.Writer, parent context.Context, key, value []byte) (err error) {
+	message := kafka.Message{Key: key, Value: value}
+	return writer.WriteMessages(parent, message)
+}
+
 func main() {
+	w := &kafka.Writer{
+		Addr:         kafka.TCP("localhost:9092"),
+		Topic:        "orders",
+		Async:        true,
+		RequiredAcks: kafka.RequireNone,
+	}
+	defer w.Close()
+
 	for {
-		w := &kafka.Writer{
-			Addr:  kafka.TCP("localhost:9092"),
-			Topic: "orders",
-		}
-		ctx := context.Background()
-		got := getOrder()
-		err := w.WriteMessages(
-			ctx,
-			kafka.Message{
-				Key:   []byte(got.time),
-				Value: []byte(got.String()),
-			},
-		)
+		go func() {
+			chipotleOrder := getOrder()
+			orderMarshalled, err := json.Marshal(chipotleOrder)
+			if err != nil {
+				log.Println("failed to marshall chipotle order: ", err)
+			}
 
-		if err != nil {
-			log.Fatal("failed to write messages: ", err)
-		}
-
-		if err := w.Close(); err != nil {
-			log.Fatal("failed to close writer: ", err)
-		}
+			err = push(w, context.Background(), []byte(chipotleOrder.Time), orderMarshalled)
+			if err != nil {
+				log.Println("failed to write messages: ", err)
+			}
+		}()
 	}
 }

@@ -1,8 +1,8 @@
 package main
 
 type Item struct {
-	name  string
-	price float64
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
 }
 
 var chipotleMenu = []Item{
@@ -36,4 +36,16 @@ var chipotleMenu = []Item{
 	Item{"Salad (Barbacoa)", 7.50},
 	Item{"Salad (Sofritas)", 6.50},
 	Item{"Salad (Vegetarian)", 6.50},
+	Item{"Chips & Guacamole", 3.25},
+	Item{"Chips & Salsa", 1.95},
+	Item{"Guacamole", 1.95},
+	Item{"Chips", 1.30},
+	Item{"Patron Margarita", 7.15},
+	Item{"Sauza Margarita", 4.70},
+	Item{"Beer Regular", 3.65},
+	Item{"Beer Large", 4.15},
+	Item{"Bottled Water", 2.25},
+	Item{"Bottled Drink", 2.60},
+	Item{"Soda Regular", 1.80},
+	Item{"Soda Large", 2.10},
 }
