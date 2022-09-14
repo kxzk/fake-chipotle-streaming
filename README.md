@@ -14,9 +14,34 @@
 |         | --> |         |     |         |     |             |
 +---------+     +---------+     +---------+     +-------------+
 ```
+# Data
+
+* [Chipotle Prices](https://www.fastfoodmenuprices.com/chipotle-prices/)
+* [GoFakeIt](https://github.com/brianvoe/gofakeit)
+
 # Chipotle Order Schema
 
 ```json
+{
+  "time": "2022-09-14 22:03:15",
+  "customer": {
+    "name": "Yoshiko McGlynn",
+    "age": 43,
+    "city": "Chula Vista",
+    "state": "Texas"
+  },
+  "order": [
+    {
+      "name": "Patron Margarita",
+      "price": 7.15
+    },
+    {
+      "name": "Salad (Chicken)",
+      "price": 6.5
+    }
+  ],
+  "creditCard": "Mastercard"
+}
 ```
 
 # Versions
