@@ -11,6 +11,8 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
+var MenuLen = len(chipotleMenu)
+
 type CustomerInfo struct {
 	Name  string `json:"name"`
 	Age   int    `json:"age"`
@@ -34,10 +36,10 @@ func createCustomer() CustomerInfo {
 }
 
 func createOrder() []Item {
-	itemCount := rand.Intn(3) + 1
+	itemCount := rand.Intn(2) + 1
 	items := make([]Item, itemCount)
 	for i := 0; i < itemCount; i++ {
-		items = append(items, chipotleMenu[rand.Intn(len(chipotleMenu))])
+		items[i] = chipotleMenu[rand.Intn(MenuLen)]
 	}
 	return items
 }
@@ -65,18 +67,25 @@ func main() {
 	}
 	defer w.Close()
 
-	for {
-		go func() {
-			chipotleOrder := getOrder()
-			orderMarshalled, err := json.Marshal(chipotleOrder)
-			if err != nil {
-				log.Println("failed to marshall chipotle order: ", err)
-			}
+	orderStream := make(chan ChipotleOrder)
 
-			err = push(w, context.Background(), []byte(chipotleOrder.Time), orderMarshalled)
-			if err != nil {
-				log.Println("failed to write messages: ", err)
-			}
-		}()
+	go func() {
+		defer close(orderStream)
+
+		for {
+			orderStream <- getOrder()
+		}
+	}()
+
+	for order := range orderStream {
+		orderJSON, err := json.Marshal(order)
+		if err != nil {
+			log.Println("failed to marshall order: ", err)
+		}
+
+		err = push(w, context.Background(), []byte(order.Time), orderJSON)
+		if err != nil {
+			log.Println("failed to write message: ", err)
+		}
 	}
 }
