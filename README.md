@@ -14,6 +14,25 @@
 |         | --> |         |     |         |     |             |
 +---------+     +---------+     +---------+     +-------------+
 ```
+# Installation
+
+* [Install Apache Kafka](https://tecadmin.net/how-to-install-apache-kafka-on-ubuntu-22-04/)
+* [Install Apache Spark](https://www.vultr.com/docs/install-apache-spark-on-ubuntu-20-04/)
+* [Install SBT](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html)
+* [Install Cassandra](https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-ubuntu-22-04)
+
+# Up & Running
+
+* Submit Spark Job + Streaming
+```bash
+make spark
+```
+
+* Create Fake Order Data
+```
+cd src && go run *.go
+```
+
 # Data
 
 * [Chipotle Prices](https://www.fastfoodmenuprices.com/chipotle-prices/)
@@ -52,25 +71,6 @@
 * Cassandra -> v 4.0.5
 * Kafka -> v 3.2.1
 
-# Installation
-
-* [Install Apache Kafka](https://tecadmin.net/how-to-install-apache-kafka-on-ubuntu-22-04/)
-* [Install Apache Spark](https://www.vultr.com/docs/install-apache-spark-on-ubuntu-20-04/)
-* [Install SBT](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html)
-* [Install Cassandra](https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-ubuntu-22-04)
-
 # Reference
 
 * [Structured Streaming + Kafka Integration](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
-
-# Up & Running
-
-* Submit Spark Job + Streaming
-```bash
-make spark
-```
-
-* Create Fake Order Data
-```
-cd src && go run *.go
-```
