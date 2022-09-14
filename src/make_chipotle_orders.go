@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
-	"strconv"
 	"fmt"
+	"log"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 	"unicode"
@@ -60,10 +60,8 @@ func getQuantity() int {
 }
 
 func getOrder() Order {
-	currTime := time.Now()
 	return Order{
-		// time with microseconds
-		currTime.Format("2006-01-02 15:04:05.000000"),
+		time.Now().UTC().Format("2006-01-02 15:04:05"),
 		createCustomer(),
 		chipotleMenu[rand.Intn(len(chipotleMenu))],
 		getQuantity(),
@@ -81,7 +79,7 @@ func main() {
 		err := w.WriteMessages(
 			ctx,
 			kafka.Message{
-				Key: []byte(got.time),
+				Key:   []byte(got.time),
 				Value: []byte(got.String()),
 			},
 		)

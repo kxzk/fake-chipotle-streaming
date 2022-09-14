@@ -4,6 +4,7 @@
 
 # Project Overview
 
+
 # Architecture Overview
 
 ```text
@@ -14,12 +15,33 @@
 +---------+     +---------+     +---------+     +-------------+
 ```
 
-# Up & Running
+# Versions
+
+* Spark -> v 3.2.0
+* Scala -> v 2.12.15
+* SBT -> v 1.7.1
+* Cassandra -> v 4.0.5
+* Kafka -> v 3.2.1
+
+# Installation
 
 * [Install Apache Kafka](https://tecadmin.net/how-to-install-apache-kafka-on-ubuntu-22-04/)
+* [Install Apache Spark](https://www.vultr.com/docs/install-apache-spark-on-ubuntu-20-04/)
+* [Install SBT](https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html)
+* [Install Cassandra](https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-ubuntu-22-04)
 
-* Kafka Consumer
+# Reference
+
+* [Structured Streaming + Kafka Integration](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
+
+# Up & Running
+
+* Submit Spark Job + Streaming
 ```bash
-cd /usr/local/kafka
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic orders --from-beginning
+make spark
+```
+
+* Create Fake Order Data
+```
+cd src && go run *.go
 ```
