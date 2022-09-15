@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -21,10 +22,10 @@ type CustomerInfo struct {
 }
 
 type ChipotleOrder struct {
-	Time       string       `json:"time"`
-	Customer   CustomerInfo `json:"customer"`
-	Order      []Item       `json:"order"`
-	CreditCard string       `json:"creditCard"`
+	Time     string       `json:"time"`
+	Customer CustomerInfo `json:"customer"`
+	Order    []Item       `json:"order"`
+	Card     string       `json:"card"`
 }
 
 func createAge() int {
@@ -73,11 +74,13 @@ func main() {
 		defer close(orderStream)
 
 		for {
+			time.Sleep(30 * time.Millisecond)
 			orderStream <- getOrder()
 		}
 	}()
 
 	for order := range orderStream {
+		fmt.Println(" order ==> ", order)
 		orderJSON, err := json.Marshal(order)
 		if err != nil {
 			log.Println("failed to marshall order: ", err)

@@ -1,4 +1,4 @@
-name := "Order Handler"
+name := "Aggregate Orders"
 
 version := "1.0"
 
