@@ -4,6 +4,9 @@
 
 # Project Overview
 
+Initially, fake chipotle order data is generated via Go using the script under `/src`. Within the script we serialize the order into JSON and push to a predefined Kafka topic `orders`. From there, we grab the topic within Spark, parse the data back to JSON (since must be []byte to send via Kafka) and explode nested columns. Finally, we aggregate order items on a 5 minute basis and push the micro-batch result to a table in Cassandra.
+
+This workflow lighlty ressembles a real-world real-time (ish) reporting scenario. Ideally there would be some sort of BI tool that sits on top of Cassandra to query the data. Additionally, the configuration and replication of the services is overly simplified since I did this project on a singular [DigitalOcean droplet](https://www.digitalocean.com/products/droplets).
 
 # Architecture Overview
 
@@ -22,6 +25,24 @@
 * [Install Cassandra](https://www.digitalocean.com/community/tutorials/how-to-install-cassandra-and-run-a-single-node-cluster-on-ubuntu-22-04)
 
 # Up & Running
+
+* Create Kafka Topic
+```bash
+kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partition 1 --topic orders
+```
+
+* Set Up Cassandra
+```sql
+create keyspace chipotle with replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+create table top_orders_every_5_mins (
+    start timestamp,
+    end timestamp,
+    name text,
+    count int,
+    primary key (start, name)
+);
+```
 
 * Submit Spark Job + Streaming
 ```bash
