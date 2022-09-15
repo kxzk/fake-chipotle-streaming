@@ -2,6 +2,13 @@
 
 > Demo project to mess around.
 
+![header](https://www.chipotle.co.uk/content/dam/chipotle/global-site-design/gb/misc-pages/order/Web%20Banner.jpg)
+
+![Scala](https://img.shields.io/badge/scala-%23DC322F.svg?style=for-the-badge&logo=scala&logoColor=white)
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
+![ApacheCassandra](https://img.shields.io/badge/cassandra-%231287B1.svg?style=for-the-badge&logo=apache-cassandra&logoColor=white)
+
 # Project Overview
 
 Initially, fake chipotle order data is generated via Go using the script under `/src`. Within the script we serialize the order into JSON and push to a predefined Kafka topic `orders`. From there, we grab the topic within Spark, parse the data back to JSON (since must be []byte to send via Kafka) and explode nested columns. Finally, we aggregate order items on a 5 minute basis and push the micro-batch result to a table in Cassandra.
