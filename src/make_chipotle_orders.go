@@ -74,7 +74,7 @@ func main() {
 		defer close(orderStream)
 
 		for {
-			time.Sleep(30 * time.Millisecond)
+			time.Sleep(23 * time.Millisecond)
 			orderStream <- getOrder()
 		}
 	}()

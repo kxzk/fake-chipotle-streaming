@@ -2,7 +2,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.streaming._
 import org.apache.spark.sql.types._
-// import org.apache.spark.sql.cassandra._
+import org.apache.spark.sql.cassandra._
 
 import java.sql.Timestamp
 
@@ -17,7 +17,7 @@ object AggOrders {
     val spark = SparkSession
       .builder
       .appName("AggOrders")
-      // .config("spark.cassandra.connection.host", "localhost")
+      .config("spark.cassandra.connection.host", "localhost")
       .getOrCreate()
 
     import spark.implicits._
@@ -38,25 +38,28 @@ object AggOrders {
       .select("record.*")
       .as[Order]
 
-    val query = orderStream
-      .writeStream
-      .outputMode("update")
-      .format("console")
-      .option("truncate", "false")
-      .start()
+    val getItems = orderStream
+      .select($"time", explode($"order") as "items")
+      .select($"time", $"items.name" as "name")
 
-//    val query = summaryDF
-//      .writeStream
-//      .trigger(Trigger.ProcessingTime("10 seconds"))
-//      .foreachBatch{ (batchDF: DataFrame, batchID: Long) =>
-//        println(s"Writing to Cassandra $batchID")
-//        batchDF.write
-//          .cassandraFormat("user_prefs_v1", "chipotle")
-//          .mode("append")
-//          .save()
-//      }
-//      .outputMode("update")
-//      .start()
+    val aggItemCount = getItems
+      .withWatermark("time", "1 minute")
+      .groupBy(window($"time", "5 minutes"), $"name")
+      .count()
+      .select($"window.start", $"window.end", $"name", $"count")
+
+    val query = aggItemCount
+      .writeStream
+      .trigger(Trigger.ProcessingTime("5 minutes"))
+      .foreachBatch{ (batchDF: DataFrame, batchID: Long) =>
+        println(s"Writing to Cassandra $batchID")
+        batchDF.write
+          .cassandraFormat("top_orders_every_5_mins", "chipotle")
+          .mode("append")
+          .save()
+      }
+      .outputMode("update")
+      .start()
 
     query.awaitTermination()
   }
