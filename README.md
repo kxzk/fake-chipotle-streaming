@@ -98,6 +98,7 @@ cd src && go run *.go
 * SBT -> v 1.7.1
 * Cassandra -> v 4.0.5
 * Kafka -> v 3.2.1
+* Go -> v 1.18.1
 
 # Reference
 
