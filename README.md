@@ -2,7 +2,7 @@
 
 > Demo project to mess around.
 
-![header](https://www.chipotle.co.uk/content/dam/chipotle/global-site-design/gb/misc-pages/order/Web%20Banner.jpg)
+![header](https://www.chipotle.co.uk/content/dam/chipotle/pages/app/uk/web-banner.jpg)
 
 ![Scala](https://img.shields.io/badge/scala-%23DC322F.svg?style=for-the-badge&logo=scala&logoColor=white)
 ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
